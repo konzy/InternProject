@@ -8,7 +8,7 @@ create table amount_spent_agg(customer_id int,
 sum_amount double,
 PRIMARY KEY(customer_id));
 
-create table agg_summary(total_customers text,
+create table agg_summary(total_customers int,
 total_spent double,
 max_spent double,
 least_spent double,

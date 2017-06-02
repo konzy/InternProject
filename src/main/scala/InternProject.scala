@@ -92,9 +92,11 @@ object InternProject {
       .withColumnRenamed("month(order_date)", "month")
       .withColumnRenamed("sum(amount)", "total_sales")
       .sort($"year", $"month")
-      .withColumn("unique_id", monotonically_increasing_id)
+      .withColumn("unique_id", monotonically_increasing_id())
+
 
     totalSalesByMonth.show()
+    totalSalesByMonth.printSchema()
 
     System.out.println("total_sales_by_month")
     saveToCassandra("total_sales_by_month", totalSalesByMonth)
@@ -103,12 +105,6 @@ object InternProject {
     totalSalesByMonth.createOrReplaceTempView("totalSales")
     totalSalesByMonth.show()
     totalSalesByMonth.printSchema()
-
-/////////////////
-
-
-
-
 
     joinedDF.unpersist()
 
