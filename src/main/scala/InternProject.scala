@@ -79,14 +79,14 @@ object InternProject {
     System.out.println("customers_by_state")
     saveToCassandra("customers_by_state", mostCustomersByState)
 
-    //    total sales in august
+
     val augTotalSales = ordersDataFrame.filter(month($"order_date").equalTo(8)).groupBy().sum("amount")
     .withColumnRenamed("sum(amount)", "sum_amount")
 
     System.out.println("total_sales_aug")
     saveToCassandra("total_sales_aug", augTotalSales)
 
-//    growth from 2016-17
+
     val totalSalesByMonth = joinedDF.groupBy(year($"order_date"), month($"order_date")).sum("amount")
       .withColumnRenamed("year(order_date)", "year")
       .withColumnRenamed("month(order_date)", "month")

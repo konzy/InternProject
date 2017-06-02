@@ -19,16 +19,15 @@ PRIMARY KEY(total_customers));
 
 create table customers_by_state(state text,
 count double,
-PRIMARY KEY((state), count)
+PRIMARY KEY((state), count))
 WITH CLUSTERING ORDER BY (count DESC);
-);
 
 create table total_sales_aug(sum_amount double,
 PRIMARY KEY(sum_amount));
 
-create table total_sales_by_month(year Int,
-  month Int,
-  total_sales double,
-  PRIMARY KEY(year, month),
-  WITH CLUSTERING ORDER BY (year DESC, month DESC);
-  );
+create table total_sales_by_month(year int,
+month int,
+total_sales double,
+PRIMARY KEY(year, month))
+WITH CLUSTERING ORDER BY (year DESC, month DESC);
+
