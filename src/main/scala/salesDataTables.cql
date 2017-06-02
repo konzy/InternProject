@@ -25,9 +25,10 @@ WITH CLUSTERING ORDER BY (count DESC);
 create table total_sales_aug(sum_amount double,
 PRIMARY KEY(sum_amount));
 
-create table total_sales_by_month(year int,
+create table total_sales_by_month(unique_id int,
+year int,
 month int,
 total_sales double,
-PRIMARY KEY(year, month))
-WITH CLUSTERING ORDER BY (year DESC, month DESC);
+PRIMARY KEY((unique_id), year, month))
+WITH CLUSTERING ORDER BY (year ASC, month ASC);
 

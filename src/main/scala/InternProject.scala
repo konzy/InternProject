@@ -92,6 +92,7 @@ object InternProject {
       .withColumnRenamed("month(order_date)", "month")
       .withColumnRenamed("sum(amount)", "total_sales")
       .sort($"year", $"month")
+      .withColumn("unique_id", monotonically_increasing_id)
 
     totalSalesByMonth.show()
 
@@ -105,40 +106,7 @@ object InternProject {
 
 /////////////////
 
-    val sales = totalSalesByMonth.withColumnRenamed("total_sales", "labels").withColumn("features", ($"year" * 10) + $"month")
 
-    val assembler = new VectorAssembler()
-      .setInputCols(Array("year", "month"))
-      .setOutputCol("features")
-
-    //sales.show
-
-    val lr = new LogisticRegression()
-      .setMaxIter(10)
-      .setRegParam(0.3)
-      .setElasticNetParam(0.8)
-
-    // Fit the model
-
-    //val lrModel = lr.fit(sales)
-
-    // Print the coefficients and intercept for logistic regression
-    //println(s"Coefficients: ${lrModel.coefficients} Intercept: ${lrModel.intercept}")
-//
-//    // We can also use the multinomial family for binary classification
-//    val mlr = new LogisticRegression()
-//      .setMaxIter(10)
-//      .setRegParam(0.3)
-//      .setElasticNetParam(0.8)
-//      .setFamily("multinomial")
-//
-//    val mlrModel = mlr.fit(totalSalesByMonth)
-//
-//    // Print the coefficients and intercepts for logistic regression with multinomial family
-//    println(s"Multinomial coefficients: ${mlrModel.coefficientMatrix}")
-//    println(s"Multinomial intercepts: ${mlrModel.interceptVector}")
-
-///////////////////////
 
 
 
