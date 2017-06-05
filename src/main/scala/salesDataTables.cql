@@ -6,7 +6,8 @@ drop table total_sales_by_month;
 
 create table amount_spent_agg(customer_id int,
 sum_amount double,
-PRIMARY KEY(customer_id));
+PRIMARY KEY((customer_id), sum_amount))
+WITH CLUSTERING ORDER BY (sum_amount DESC);
 
 create table agg_summary(total_customers int,
 total_spent double,

@@ -44,23 +44,24 @@ object InternProject {
     joinedDF.cache()
 
     val amountSpentAgg = joinedDF.select($"customer_id", $"amount").groupBy($"customer_id").sum("amount")
-      .withColumnRenamed("sum(amount)", "sum_amount").sort($"sum_amount" desc).limit(10)
+      .withColumnRenamed("sum(amount)", "sum_amount").sort($"sum_amount" desc)
 
     System.out.println("amount_spent_agg")
     amountSpentAgg.show
 
     saveToCassandra("amount_spent_agg", amountSpentAgg)
 
+    import org.apache.spark.sql.functions._
 
     val aggregateSummary = joinedDF.select($"customer_id", $"amount")
       .agg(
-        functions.count("customer_id").as("total_customers"),
-        functions.sum("amount").as("total_spent"),
-        functions.max("amount").as("max_spent"),
-        functions.min("amount").as("least_spent"),
-        functions.avg("amount").as("avg_spent"),
-        functions.mean("amount").as("mean_spent"),
-        functions.skewness("amount").as("skewness")
+        count("customer_id").as("total_customers"),
+        sum("amount").as("total_spent"),
+        max("amount").as("max_spent"),
+        min("amount").as("least_spent"),
+        avg("amount").as("avg_spent"),
+        mean("amount").as("mean_spent"),
+        skewness("amount").as("skewness")
       )
 
     aggregateSummary.show()

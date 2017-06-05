@@ -25,35 +25,21 @@ object MachineLearningTest {
 
     spark.sqlContext.setConf("Cluster/spark.cassandra.connection.host", "localhost") //for example
 
-    val connector = CassandraConnector.apply(spark.sparkContext)
-    val session = connector.openSession()
-
     val totalSalesByMonth = spark.read.format("org.apache.spark.sql.cassandra")
       .options(Map("cluster" -> "Cluster", "table" -> "total_sales_by_month", "keyspace" -> "sales_data"))
       .load()
 
     totalSalesByMonth.createOrReplaceTempView("total_sales")
 
-    totalSalesByMonth.show()
-
-    // Rename the Yearly Amount Spent Column as "label"
-    // Also grab only the numerical columns from the data
-    // Set all of this as a new dataframe called df
     val df = totalSalesByMonth.select("total_sales", "year", "month").withColumnRenamed("total_sales", "label")
-
-    // An assembler converts the input values to a vector
-    // A vector is what the ML algorithm reads to train a model
-
-    // Use VectorAssembler to convert the input columns of df
-    // to a single output column of an array called "features"
-    // Set the input columns from which we are supposed to read the values.
-    // Call this new object assembler
+    df.show()
 
     val assembler = new VectorAssembler()
       .setInputCols(Array("year", "month"))
       .setOutputCol("features")
 
     val output = assembler.transform(df).select("label", "features")
+    output.show()
 
     val lr = new LinearRegression()
 
