@@ -13,3 +13,5 @@ libraryDependencies ++= Seq("org.apache.spark" %% "spark-core" % "2.1.1" % "prov
 libraryDependencies += "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.2"
 
 libraryDependencies += "org.apache.spark" % "spark-mllib_2.11" % "2.1.1"
+
+libraryDependencies += "com.databricks" % "spark-xml_2.11" % "0.4.1"

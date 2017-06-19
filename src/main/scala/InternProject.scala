@@ -1,4 +1,7 @@
 import org.apache.spark.sql._
+import org.apache.spark.sql.types.StringType
+
+import scala.io
 
 /**
   * @author Brian Konzman
@@ -25,6 +28,12 @@ import org.apache.spark.sql._
 
 object InternProject {
   def main(args: Array[String]): Unit = {
+
+    val source = scala.io.Source.fromFile("/Users/bkonzman/IdeaProjects/InternProject/datasets/cd_catalog.xml")
+    val lines = try source.getLines mkString "\n" finally source.close()
+
+
+
     val spark: SparkSession = SparkSession
       .builder()
       .appName("test_company")
@@ -32,6 +41,31 @@ object InternProject {
       .getOrCreate()
 
     import spark.implicits._ //for $ notation
+
+    val jdbcDF = spark.read
+      .format("jdbc")
+      .option("url", "jdbc:oracle:dbserver")
+      .option("dbtable", "schema.tablename")
+      .option("user", "username")
+      .option("password", "password")
+      .load()
+
+    val df = spark.sql("select XXTMT.compressor.blob_decompress(tpv.pld) as \"UNCOMPRESSED_BLOB\", " +
+      "tpv.CREATE_DT,tpv.COMPRESSION_FORMAT from tmt_tran_log ttl, tmt_tran_stat_log ttsl, tmt_tran_stat_mst tsm,tmt_pld_ver tpv " +
+      "where ttl.tran_log_id=ttsl.tran_log_id and tsm.tran_stat_id=ttsl.tran_stat_id and ttl.tran_log_id=tpv.tran_log_id " +
+      "and ttsl.tran_stat_id=tpv.tran_stat_id and lower(tsm.tran_stat_nm)='order request received.' " +
+      "order by tpv.create_dt desc;")
+
+    import org.apache.spark.sql._
+
+
+    //val df = spark.sql("select body from test limit 3"); // body is a json encoded blob column
+    val df2 = df.select(df("UNCOMPRESSED_BLOB").cast(StringType).as("body"))
+
+    val rdd = df2.rdd.map { case Row(j: String) => j }
+    spark.read.json(rdd).show()
+
+
 
     //read data from mock csv customer
     val customersDataFrame = spark.read.format("com.databricks.spark.csv")
@@ -50,6 +84,15 @@ object InternProject {
       .csv("/Users/bkonzman/IdeaProjects/TestScalaSpark/datasets/order.csv")
 
     ordersDataFrame.createOrReplaceTempView("orders")
+
+    val cdLibraryDataFrame = spark.read.format("com.databricks.spark.xml")
+      .option("inferSchema", "true")
+      .load()
+
+    cdLibraryDataFrame.show()
+
+
+
 
     spark.sqlContext.setConf("Cluster/spark.cassandra.connection.host", "localhost") //for example
 

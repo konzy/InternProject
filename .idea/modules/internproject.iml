@@ -171,5 +171,6 @@
     <orderEntry type="library" name="SBT: commons-lang:commons-lang:2.5:jar" level="project" />
     <orderEntry type="library" name="SBT: joda-time:joda-time:2.3:jar" level="project" />
     <orderEntry type="library" name="SBT: org.joda:joda-convert:1.2:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.databricks:spark-xml_2.11:0.4.1:jar" level="project" />
   </component>
 </module>
