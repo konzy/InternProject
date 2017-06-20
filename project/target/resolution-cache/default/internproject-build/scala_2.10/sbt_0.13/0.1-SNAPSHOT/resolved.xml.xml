@@ -4,7 +4,7 @@
 		module="internproject-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20170615131244"
+		publication="20170619151907"
 		e:sbtVersion="0.13" e:scalaVersion="2.10"
 	>
 		<description>
